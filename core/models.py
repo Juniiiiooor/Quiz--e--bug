@@ -11,6 +11,24 @@ from datetime import datetime, timezone
 from typing import Any
 from uuid import uuid4
 
+
+def _texto_valido(valor: Any, nome: str, minimo: int = 1) -> str:
+    if not isinstance(valor, str):
+        raise ValueError(f"{nome} precisa ser um texto.")
+    texto = valor.strip()
+    if len(texto) < minimo:
+        raise ValueError(f"{nome} precisa ter pelo menos {minimo} caractere(s).")
+    return texto
+
+
+def _alternativas_validas(valor: Any) -> list[str]:
+    if not isinstance(valor, list):
+        raise ValueError("A lista de alternativas precisa existir.")
+    alternativas = [_texto_valido(item, "Cada alternativa", 1) for item in valor]
+    if len(alternativas) < 2:
+        raise ValueError("A pergunta precisa de pelo menos 2 alternativas.")
+    return alternativas
+
 DIFICULDADES = {"facil": 1, "medio": 2, "dificil": 3}
 CATEGORIAS_PADRAO = (
     "Geral",
@@ -46,14 +64,12 @@ class Pergunta:
     explicacao: str = ""
 
     def __post_init__(self) -> None:
-        self.enunciado = self.enunciado.strip()
-        self.alternativas = [alternativa.strip() for alternativa in self.alternativas]
-        self.explicacao = self.explicacao.strip()
+        self.enunciado = _texto_valido(self.enunciado, "O enunciado", 5)
+        self.alternativas = _alternativas_validas(self.alternativas)
+        self.categoria = _texto_valido(self.categoria, "A categoria", 1)
+        self.dificuldade = _texto_valido(self.dificuldade, "A dificuldade", 1).lower()
+        self.explicacao = _texto_valido(self.explicacao, "A explicação", 0) if self.explicacao is not None else ""
 
-        if len(self.enunciado) < 5:
-            raise ValueError("O enunciado precisa ter pelo menos 5 caracteres.")
-        if len(self.alternativas) < 2:
-            raise ValueError("A pergunta precisa de pelo menos 2 alternativas.")
         if not 0 <= self.correta < len(self.alternativas):
             raise ValueError("O índice da alternativa correta é inválido.")
         if self.dificuldade not in DIFICULDADES:
@@ -141,21 +157,14 @@ class Desafio:
     explicacao: str = ""
 
     def __post_init__(self) -> None:
-        self.titulo = self.titulo.strip()
-        self.linguagem = self.linguagem.strip() or "Código"
-        self.tema = self.tema.strip() or "Geral"
-        self.descricao = self.descricao.strip()
-        self.alternativas = [alternativa.strip() for alternativa in self.alternativas]
-        self.explicacao = self.explicacao.strip()
+        self.titulo = _texto_valido(self.titulo, "O título", 3)
+        self.linguagem = _texto_valido(self.linguagem, "A linguagem", 1) if self.linguagem is not None else "Código"
+        self.tema = _texto_valido(self.tema, "O tema", 1) if self.tema is not None else "Geral"
+        self.descricao = _texto_valido(self.descricao, "A descrição", 5)
+        self.alternativas = _alternativas_validas(self.alternativas)
+        self.codigo = _texto_valido(self.codigo, "O código", 1)
+        self.explicacao = _texto_valido(self.explicacao, "A explicação", 0) if self.explicacao is not None else ""
 
-        if len(self.titulo) < 3:
-            raise ValueError("O título do desafio precisa ter pelo menos 3 caracteres.")
-        if not self.codigo.strip():
-            raise ValueError("O desafio precisa de um trecho de código.")
-        if len(self.descricao) < 5:
-            raise ValueError("A descrição precisa ter pelo menos 5 caracteres.")
-        if len(self.alternativas) < 2:
-            raise ValueError("O desafio precisa de pelo menos 2 alternativas.")
         if not 0 <= self.correta < len(self.alternativas):
             raise ValueError("O índice da alternativa correta é inválido.")
 
@@ -222,9 +231,7 @@ class Jogador:
     criado_em: str = field(default_factory=_agora)
 
     def __post_init__(self) -> None:
-        self.nome = self.nome.strip()
-        if len(self.nome) < 2:
-            raise ValueError("O nome do jogador precisa ter pelo menos 2 caracteres.")
+        self.nome = _texto_valido(self.nome, "O nome", 2)
 
     @property
     def aproveitamento(self) -> float:
@@ -295,8 +302,10 @@ class Partida:
     finalizada_em: str | None = None
 
     def __post_init__(self) -> None:
-        if not self.perguntas:
+        if not isinstance(self.perguntas, list) or not self.perguntas:
             raise ValueError("A partida precisa de pelo menos uma pergunta.")
+        if any(not isinstance(pergunta, Pergunta) for pergunta in self.perguntas):
+            raise ValueError("A partida precisa receber uma lista de perguntas válidas.")
 
     def iniciar(self) -> "Partida":
         if self.status == "finalizada":

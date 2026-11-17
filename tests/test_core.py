@@ -52,6 +52,15 @@ class TestPergunta(unittest.TestCase):
         with self.assertRaises(ValueError):
             Pergunta(id="x", enunciado="Pergunta válida?", alternativas=["A"], correta=0)
 
+    def test_rejeita_alternativa_nao_texto(self) -> None:
+        with self.assertRaises(ValueError):
+            Pergunta(
+                id="x",
+                enunciado="Pergunta válida?",
+                alternativas=[1, "B"],
+                correta=0,
+            )
+
     def test_rejeita_indice_da_correta_invalido(self) -> None:
         with self.assertRaises(ValueError):
             Pergunta(
@@ -366,6 +375,9 @@ class TestServico(BaseComRepositorio):
         perguntas = self.service.listar_perguntas(categoria="Python")
         self.assertGreaterEqual(len(perguntas), 1)
         self.assertTrue(all(item["categoria"] == "Python" for item in perguntas))
+
+    def test_ranking_com_limite_zero_retorna_vazio(self) -> None:
+        self.assertEqual(self.service.ranking(limite=0), [])
 
     def test_iniciar_partida_limita_quantidade(self) -> None:
         partida = self.service.iniciar_partida(nome="Joana", quantidade=3)

@@ -124,11 +124,22 @@ class RepositorioJSON:
 
     @staticmethod
     def _chave_ranking(item: dict[str, Any]) -> tuple[int, float, int]:
-        return (
-            int(item.get("pontuacao", 0)),
-            float(item.get("aproveitamento", 0)),
-            int(item.get("acertos", 0)),
-        )
+        try:
+            pontuacao = int(item.get("pontuacao", 0) or 0)
+        except (TypeError, ValueError):
+            pontuacao = 0
+
+        try:
+            aproveitamento = float(item.get("aproveitamento", 0) or 0)
+        except (TypeError, ValueError):
+            aproveitamento = 0.0
+
+        try:
+            acertos = int(item.get("acertos", 0) or 0)
+        except (TypeError, ValueError):
+            acertos = 0
+
+        return (pontuacao, aproveitamento, acertos)
 
     def registrar_no_ranking(self, jogador: Jogador) -> list[dict[str, Any]]:
         """Guarda a melhor partida de cada jogador, sem duplicar nomes."""

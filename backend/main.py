@@ -332,12 +332,18 @@ def iniciar_partida():
         return _erro("A quantidade precisa ser um inteiro maior ou igual a 1.", 422)
 
     categoria = dados.get("categoria")
-    if categoria is not None and not isinstance(categoria, str):
-        return _erro("A categoria precisa ser um texto.", 422)
+    if categoria is not None:
+        if not isinstance(categoria, str):
+            return _erro("A categoria precisa ser um texto.", 422)
+        categoria = categoria.strip()
 
     dificuldade = dados.get("dificuldade")
-    if dificuldade is not None and dificuldade not in DIFICULDADES:
-        return _erro("Dificuldade inválida. Use facil, medio ou dificil.", 422)
+    if dificuldade is not None:
+        if not isinstance(dificuldade, str):
+            return _erro("Dificuldade inválida. Use facil, medio ou dificil.", 422)
+        dificuldade = dificuldade.strip().lower()
+        if dificuldade not in DIFICULDADES:
+            return _erro("Dificuldade inválida. Use facil, medio ou dificil.", 422)
 
     try:
         partida = service.iniciar_partida(

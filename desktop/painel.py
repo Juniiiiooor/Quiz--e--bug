@@ -22,13 +22,19 @@ if str(RAIZ) not in sys.path:
 from core.models import CATEGORIAS_PADRAO, DIFICULDADES
 from core.services import QuizService
 
-COR_FUNDO = "#0f172a"
-COR_PAINEL = "#1e293b"
-COR_TEXTO = "#e2e8f0"
-COR_TEXTO_FRACO = "#94a3b8"
-COR_DESTAQUE = "#38bdf8"
-COR_SUCESSO = "#22c55e"
-COR_ERRO = "#f87171"
+COR_FUNDO = "#f3f6fb"
+COR_PAINEL = "#ffffff"
+COR_PAINEL_ESCURO = "#eef3f8"
+COR_TEXTO = "#17263c"
+COR_TEXTO_FRACO = "#45566d"
+COR_DESTAQUE = "#006c9c"
+COR_DESTAQUE_ATIVO = "#00547a"
+COR_SUCESSO = "#16784b"
+COR_ERRO = "#b42332"
+COR_BORDA = "#c7d2e0"
+COR_BOTAO = "#e7edf5"
+COR_BOTAO_HOVER = "#d6e0ec"
+COR_SELECAO = "#d8edf8"
 
 LETRAS = "ABCDEFGH"
 
@@ -64,7 +70,7 @@ class AplicacaoQuiz(tk.Tk):
             "TLabel",
             background=COR_FUNDO,
             foreground=COR_TEXTO,
-            font=("Segoe UI", 10),
+            font=("Segoe UI", 12),
         )
         estilo.configure(
             "Painel.TLabel",
@@ -75,13 +81,13 @@ class AplicacaoQuiz(tk.Tk):
             "Titulo.TLabel",
             background=COR_FUNDO,
             foreground=COR_TEXTO,
-            font=("Segoe UI", 15, "bold"),
+            font=("Segoe UI", 17, "bold"),
         )
         estilo.configure(
             "Pergunta.TLabel",
             background=COR_PAINEL,
             foreground=COR_TEXTO,
-            font=("Segoe UI", 16, "bold"),
+            font=("Segoe UI", 18, "bold"),
             wraplength=560,
             justify="left",
         )
@@ -89,83 +95,91 @@ class AplicacaoQuiz(tk.Tk):
             "Fraca.TLabel",
             background=COR_FUNDO,
             foreground=COR_TEXTO_FRACO,
-            font=("Segoe UI", 9),
+            font=("Segoe UI", 11),
         )
         estilo.configure(
             "FracaPainel.TLabel",
             background=COR_PAINEL,
             foreground=COR_TEXTO_FRACO,
-            font=("Segoe UI", 9),
+            font=("Segoe UI", 11),
         )
         estilo.configure(
             "TButton",
-            background="#334155",
+            background=COR_BOTAO,
             foreground=COR_TEXTO,
             borderwidth=0,
-            padding=(12, 7),
-            font=("Segoe UI", 10, "bold"),
+            padding=(14, 9),
+            font=("Segoe UI", 12, "bold"),
         )
-        estilo.map("TButton", background=[("active", "#475569")])
+        estilo.map("TButton", background=[("active", COR_BOTAO_HOVER)])
         estilo.configure(
             "Destaque.TButton",
             background=COR_DESTAQUE,
-            foreground="#082f49",
+            foreground="#ffffff",
         )
-        estilo.map("Destaque.TButton", background=[("active", "#7dd3fc")])
+        estilo.map("Destaque.TButton", background=[("active", COR_DESTAQUE_ATIVO)])
         estilo.configure("TNotebook", background=COR_FUNDO, borderwidth=0)
         estilo.configure(
             "TNotebook.Tab",
-            background="#1e293b",
+            background=COR_BOTAO,
             foreground=COR_TEXTO_FRACO,
             padding=(18, 9),
-            font=("Segoe UI", 10, "bold"),
+            font=("Segoe UI", 11, "bold"),
         )
         estilo.map(
             "TNotebook.Tab",
             background=[("selected", COR_DESTAQUE)],
-            foreground=[("selected", "#082f49")],
+            foreground=[("selected", "#ffffff")],
         )
         estilo.configure(
             "TEntry",
-            fieldbackground="#0b1220",
+            fieldbackground=COR_PAINEL_ESCURO,
             foreground=COR_TEXTO,
             insertcolor=COR_TEXTO,
             borderwidth=0,
             padding=6,
+            font=("Segoe UI", 12),
         )
         estilo.configure(
             "TCombobox",
-            fieldbackground="#0b1220",
-            background="#334155",
+            fieldbackground=COR_PAINEL_ESCURO,
+            background=COR_BOTAO,
             foreground=COR_TEXTO,
             arrowcolor=COR_TEXTO,
             borderwidth=0,
             padding=5,
+            font=("Segoe UI", 12),
         )
         estilo.configure(
             "TSpinbox",
-            fieldbackground="#0b1220",
+            fieldbackground=COR_PAINEL_ESCURO,
             foreground=COR_TEXTO,
             arrowcolor=COR_TEXTO,
             borderwidth=0,
             padding=5,
+            font=("Segoe UI", 12),
         )
         estilo.configure(
             "Treeview",
-            background="#0b1220",
-            fieldbackground="#0b1220",
+            background=COR_PAINEL_ESCURO,
+            fieldbackground=COR_PAINEL_ESCURO,
             foreground=COR_TEXTO,
-            rowheight=26,
+            rowheight=36,
             borderwidth=0,
+            font=("Segoe UI", 12),
         )
         estilo.configure(
             "Treeview.Heading",
-            background="#334155",
+            background=COR_BOTAO,
             foreground=COR_TEXTO,
-            font=("Segoe UI", 9, "bold"),
-            padding=5,
+            font=("Segoe UI", 11, "bold"),
+            padding=7,
         )
-        estilo.map("Treeview", background=[("selected", "#0369a1")])
+        estilo.map(
+            "Treeview",
+            background=[("selected", COR_SELECAO)],
+            foreground=[("selected", COR_TEXTO)],
+        )
 
     def _montar_abas(self) -> None:
         self.notebook = ttk.Notebook(self)
@@ -224,7 +238,7 @@ class AplicacaoQuiz(tk.Tk):
             self.aba_partida,
             bg=COR_PAINEL,
             highlightthickness=1,
-            highlightbackground="#334155",
+            highlightbackground=COR_BORDA,
             padx=22,
             pady=18,
         )
@@ -236,7 +250,7 @@ class AplicacaoQuiz(tk.Tk):
             text="Pronto para começar",
             bg=COR_PAINEL,
             fg=COR_TEXTO_FRACO,
-            font=("Segoe UI", 9),
+            font=("Segoe UI", 11),
             anchor="w",
         )
         self.lbl_progresso.grid(row=0, column=0, sticky="ew")
@@ -246,7 +260,7 @@ class AplicacaoQuiz(tk.Tk):
             text="",
             bg=COR_PAINEL,
             fg=COR_DESTAQUE,
-            font=("Segoe UI", 13, "bold"),
+            font=("Segoe UI", 15, "bold"),
             anchor="e",
         )
         self.lbl_tempo.grid(row=0, column=1, sticky="e")
@@ -256,7 +270,7 @@ class AplicacaoQuiz(tk.Tk):
             text="Clique em “Iniciar partida” para começar.",
             bg=COR_PAINEL,
             fg=COR_TEXTO,
-            font=("Segoe UI", 16, "bold"),
+            font=("Segoe UI", 18, "bold"),
             wraplength=560,
             justify="left",
             anchor="w",
@@ -272,7 +286,7 @@ class AplicacaoQuiz(tk.Tk):
             text="",
             bg=COR_PAINEL,
             fg=COR_TEXTO,
-            font=("Segoe UI", 11, "bold"),
+            font=("Segoe UI", 13, "bold"),
             wraplength=560,
             justify="left",
             anchor="w",
@@ -299,7 +313,7 @@ class AplicacaoQuiz(tk.Tk):
             painel,
             text="🏆 Ranking",
             style="Painel.TLabel",
-            font=("Segoe UI", 13, "bold"),
+            font=("Segoe UI", 15, "bold"),
         ).grid(row=0, column=0, sticky="w", pady=(0, 10))
 
         colunas = ("nome", "pontos", "acertos", "aproveitamento")
@@ -504,8 +518,8 @@ class AplicacaoQuiz(tk.Tk):
                 fg=COR_TEXTO,
                 activebackground=COR_PAINEL,
                 activeforeground=COR_DESTAQUE,
-                selectcolor="#0b1220",
-                font=("Segoe UI", 11),
+                selectcolor=COR_PAINEL_ESCURO,
+                font=("Segoe UI", 13),
                 anchor="w",
                 justify="left",
                 padx=6,

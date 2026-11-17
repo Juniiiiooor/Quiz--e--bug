@@ -27,7 +27,8 @@ class QuizService:
     ) -> list[dict[str, Any]] | list[Pergunta]:
         perguntas = self.repo.carregar_perguntas()
 
-        if categoria:
+        if categoria is not None:
+            categoria = categoria.strip()
             perguntas = [
                 pergunta
                 for pergunta in perguntas
@@ -83,16 +84,22 @@ class QuizService:
         dificuldade: str | None = None,
         embaralhar: bool = True,
     ) -> Partida:
+        if quantidade is not None:
+            if isinstance(quantidade, bool) or not isinstance(quantidade, int) or quantidade < 1:
+                raise ValueError("A quantidade precisa ser um inteiro maior ou igual a 1.")
+
         perguntas = self.repo.carregar_perguntas()
 
-        if categoria:
+        if categoria is not None:
+            categoria = categoria.strip()
             perguntas = [
                 pergunta
                 for pergunta in perguntas
                 if pergunta.categoria.lower() == categoria.lower()
             ]
 
-        if dificuldade:
+        if dificuldade is not None:
+            dificuldade = dificuldade.strip().lower()
             perguntas = [
                 pergunta
                 for pergunta in perguntas
@@ -105,8 +112,8 @@ class QuizService:
         if embaralhar:
             random.shuffle(perguntas)
 
-        if quantidade:
-            perguntas = perguntas[: max(1, int(quantidade))]
+        if quantidade is not None:
+            perguntas = perguntas[: quantidade]
 
         jogador = Jogador(nome=nome)
         partida = Partida(jogador=jogador, perguntas=perguntas).iniciar()
@@ -156,4 +163,10 @@ class QuizService:
 
     # ------------------------------ Ranking ------------------------------
     def ranking(self, limite: int = 10) -> list[dict[str, Any]]:
+        if limite is None:
+            return []
+        if isinstance(limite, bool) or not isinstance(limite, int):
+            raise ValueError("O limite precisa ser um inteiro.")
+        if limite <= 0:
+            return []
         return self.repo.top_ranking(limite)
