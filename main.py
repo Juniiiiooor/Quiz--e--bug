@@ -14,7 +14,7 @@ sem precisar entrar na pasta `backend`.
 
 Variáveis de ambiente opcionais:
     HOST                 (padrão: 127.0.0.1)
-    PORT                 (padrão: 8000)
+    PORT                 (padrão: 8097)
     QUIZ_ABRIR_NAVEGADOR (padrão: 1; use 0 para não abrir o navegador)
     QUIZ_DEBUG           (padrão: 0; use 1 para modo de depuração)
 """
@@ -60,7 +60,7 @@ app = carregar_app()
 
 if __name__ == "__main__":
     host = os.getenv("HOST", "127.0.0.1")
-    porta = int(os.getenv("PORT", "8000"))
+    porta = int(os.getenv("PORT", "8097"))
     url = f"http://{host}:{porta}"
 
     print(f"Quiz Arena em {url}")

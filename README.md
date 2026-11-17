@@ -167,7 +167,7 @@ Esse único comando:
 
 - sobe a API Flask;
 - entrega o front-end React já compilado (`web/dist`) na mesma porta;
-- abre o navegador em <http://127.0.0.1:8000>;
+- abre o navegador em <http://127.0.0.1:8097>;
 - mantém **um único processo**: ao fechar o terminal (ou pressionar
   **CTRL+C**), o site para de responder.
 
@@ -176,9 +176,9 @@ Esse único comando:
 
 Endereços:
 
-- Web + API: <http://127.0.0.1:8000>
-- Documentação simples: <http://127.0.0.1:8000/docs>
-- Health check: <http://127.0.0.1:8000/health>
+- Web + API: <http://127.0.0.1:8097>
+- Documentação simples: <http://127.0.0.1:8097/docs>
+- Health check: <http://127.0.0.1:8097/health>
 
 Também funciona entrando na pasta `backend` (`python main.py`), mas aí o
 front-end só é servido se `web/dist` existir.
@@ -190,7 +190,7 @@ Variáveis opcionais:
 | `QUIZ_ADMIN_TOKEN` | Exige o cabeçalho `X-Admin-Token` no `POST /api/perguntas` |
 | `QUIZ_CORS_ORIGINS` | Origens permitidas, separadas por vírgula (padrão: `http://localhost:5173,http://127.0.0.1:5173`) |
 | `QUIZ_DATA_DIR` | Pasta alternativa para `perguntas.json` e `ranking.json` |
-| `PORT` | Porta do servidor Flask (padrão: `8000`) |
+| `PORT` | Porta do servidor Flask (padrão: `8097` na raiz; `8000` em `backend`) |
 | `QUIZ_ABRIR_NAVEGADOR` | `0` impede a abertura automática do navegador |
 | `QUIZ_DEBUG` | `1` liga o modo de depuração do Flask |
 
@@ -206,8 +206,10 @@ npm run dev
 ```
 
 Abra <http://localhost:5173>. O Vite encaminha `/api` e `/health` para
-`http://127.0.0.1:8000` (veja `web/vite.config.js`), então mantenha o
-`python main.py` rodando em outro terminal.
+`http://127.0.0.1:8097` por padrão, então mantenha o `python main.py` da raiz
+rodando em outro terminal. Para usar outra porta, defina
+`VITE_API_PROXY_TARGET` em `web/.env.local`, por exemplo
+`http://127.0.0.1:8001`.
 
 Depois de alterar o React, gere o build que o `python main.py` serve:
 
@@ -408,21 +410,21 @@ manualmente (`workflow_dispatch`). Ele tem três jobs:
 
 **A web mostra "Não foi possível carregar as categorias".**
 O servidor não está rodando. Na raiz do projeto, rode `python main.py` e abra
-<http://127.0.0.1:8000>. Se você estiver usando o modo desenvolvimento, o Vite
+<http://127.0.0.1:8097>. Se você estiver usando o modo desenvolvimento, o Vite
 (<http://localhost:5173>) também precisa do `python main.py` em outro terminal.
 
 **Fechei o terminal, mas a web continua abrindo.**
 A versão atual usa `use_reloader=False`, então `python main.py` é um único
-processo e para junto com o terminal. Se ainda houver algo na porta 8000 ou
-5173, encerre processos antigos:
+processo e para junto com o terminal. Se ainda houver algo nas portas 8000,
+8097 ou 5173, encerre processos antigos:
 
 ```powershell
-Get-NetTCPConnection -LocalPort 8000,5173 -State Listen |
+Get-NetTCPConnection -LocalPort 8000,8097,5173 -State Listen |
   Select-Object LocalPort,OwningProcess
 Stop-Process -Id <PID> -Force
 ```
 
-**Alterei o React e a web em 8000 não mudou.**
+**Alterei o React e a web em 8097 não mudou.**
 O `python main.py` serve o build em `web/dist`. Rode `cd web; npm run build`
 para atualizar (ou use o Vite em <http://localhost:5173> durante o desenvolvimento).
 
@@ -430,7 +432,7 @@ para atualizar (ou use o Vite em <http://localhost:5173> durante o desenvolvimen
 O ambiente virtual não está ativado ou foi criado com outra versão do Python.
 Use `py -3.11 -m venv .venv` e ative antes de instalar.
 
-**Porta 8000 ou 5173 ocupada.**
+**Porta 8097, 8000 ou 5173 ocupada.**
 
 ```powershell
 cd backend
@@ -438,7 +440,8 @@ $env:PORT = "8001"
 python main.py
 ```
 
-Nesse caso, ajuste o proxy em `web/vite.config.js`.
+Nesse caso, configure `VITE_API_PROXY_TARGET=http://127.0.0.1:8001` em
+`web/.env.local` e reinicie o Vite.
 
 **`npm install` sem internet.**
 Conecte-se à rede liberada e rode novamente. Se já houver cache local, tente

@@ -28,7 +28,7 @@ export default function App() {
       .catch(() => {
         if (ativo) {
           setErro(
-            "Não foi possível carregar as categorias. O backend Flask está rodando em http://localhost:8000?",
+            "Não foi possível carregar as categorias. Verifique se o backend Flask está rodando e acessível.",
           );
         }
       });

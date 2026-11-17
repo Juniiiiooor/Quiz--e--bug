@@ -102,7 +102,7 @@ export default function Home({ onJogarQuiz, onCacaBug, onVerRanking }) {
         </code>{" "}
         e acesse{" "}
         <code className="rounded bg-slate-800 px-1 py-0.5 text-slate-300">
-          http://127.0.0.1:8000
+          http://127.0.0.1:8097
         </code>
         . Ao fechar o terminal, o site para de responder.
       </p>
