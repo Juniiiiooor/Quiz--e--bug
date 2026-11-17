@@ -23,37 +23,20 @@ pontos e mostra uma explicação depois da resposta.
 
 ---
 
-## ⬇️ Baixar o aplicativo (Windows)
+## 🖥️ Painel do apresentador (Tkinter)
 
-### Opção 1 — pacote portátil (recomendado)
+O painel permite iniciar partidas, acompanhar o cronômetro, controlar o avanço
+das perguntas, cadastrar perguntas e consultar o ranking. Ele usa diretamente
+o núcleo do projeto e não precisa do servidor Flask.
 
-**Roda em qualquer Windows 10/11 de 64 bits, sem instalar Python.** O Python e o
-Tkinter vão embutidos, e o pacote **não usa `.exe` compilado** — por isso o
-antivírus não sinaliza.
+Requer Python 3.11 ou superior com Tkinter. Na raiz do projeto, execute:
 
-1. Baixe **[Quiz-Arena-Portatil.zip](https://github.com/Juniiiiooor/Quiz--e--bug/raw/main/downloads/Quiz-Arena-Portatil.zip)** (~14 MB).
-2. Extraia a pasta (pode ser em qualquer lugar, inclusive com espaços/acentos).
-3. Dê duplo clique em **`Quiz Arena.cmd`**.
+```powershell
+python desktop/painel.py
+```
 
-> O pacote foi verificado com o Windows Defender: **nenhuma ameaça encontrada**.
-> Ele não depende do Python da máquina onde foi gerado.
-
-### Opção 2 — código-fonte (para quem já tem Python)
-
-Pacote leve, para máquinas que já têm Python 3.11+ com Tkinter.
-
-1. Baixe **[Quiz-Arena-Codigo.zip](https://github.com/Juniiiiooor/Quiz--e--bug/raw/main/downloads/Quiz-Arena-Codigo.zip)**.
-2. Extraia a pasta.
-3. Dê duplo clique em **`Quiz Arena.cmd`**.
-
-> O antigo `Quiz-Arena-Windows.zip` com `.exe` foi removido porque o
-> PyInstaller gera **falso positivo** no Windows Defender.
-
-O app abre offline com os modos **Quiz relâmpago**, **Caça ao Bug** e **Ranking**.
-Na primeira execução, a pasta `data/` é criada automaticamente com as perguntas,
-os desafios e o ranking.
-
-Para rodar a versão web, use o `python main.py` explicado mais abaixo.
+O aplicativo desktop com menu de cards e modos offline também pode ser iniciado
+com `python desktop/app.py`.
 
 ---
 
@@ -78,8 +61,10 @@ Para rodar a versão web, use o `python main.py` explicado mais abaixo.
 - [x] Testes da API com `pytest` + cliente de testes do Flask
 - [x] Painel Tkinter com abas **Partida** e **Perguntas**
 - [x] App desktop único (Tkinter) com menu de cards e modos offline
+- [x] Tema claro com alto contraste nas interfaces desktop
 - [x] Interface React com Home (cards), Quiz, Resultado, Ranking e Caça ao Bug
 - [x] `python main.py` sobe web + API em um único processo/porta
+- [x] Apresentação do projeto em `docs/Apresentacao_Quiz_Arena.pdf`
 - [x] Licença MIT em português (`LICENSE`)
 - [x] Pipeline de CI em `.github/workflows/pipeline.yml`
 
@@ -126,10 +111,8 @@ quiz-arena/
 │   ├── app.py             # app único (menu de cards, offline)
 │   └── painel.py
 ├── docs/
-│   └── aprendizados.md
-├── downloads/
-│   ├── Quiz-Arena-Portatil.zip  # app + Python embutido (recomendado)
-│   └── Quiz-Arena-Codigo.zip    # código-fonte leve
+│   ├── aprendizados.md
+│   └── Apresentacao_Quiz_Arena.pdf
 ├── tests/
 │   ├── __init__.py
 │   └── test_core.py
@@ -167,7 +150,9 @@ quiz-arena/
 
 ### 1. Aplicação completa (web + API) — um comando
 
-No Windows, use Python 3.11 ou 3.13 (o Python 3.15 pode não ter as dependências):
+No Windows, use Python 3.11 ou superior. A CI testa com Python 3.11; se sua
+instalação tiver apenas Python 3.13, troque `-3.11` por `-3.13` no comando
+de criação do ambiente virtual.
 
 ```powershell
 py -3.11 -m venv .venv
@@ -203,7 +188,7 @@ Variáveis opcionais:
 | Variável | Efeito |
 | --- | --- |
 | `QUIZ_ADMIN_TOKEN` | Exige o cabeçalho `X-Admin-Token` no `POST /api/perguntas` |
-| `QUIZ_CORS_ORIGINS` | Origens permitidas, separadas por vírgula (padrão: `localhost:5173`) |
+| `QUIZ_CORS_ORIGINS` | Origens permitidas, separadas por vírgula (padrão: `http://localhost:5173,http://127.0.0.1:5173`) |
 | `QUIZ_DATA_DIR` | Pasta alternativa para `perguntas.json` e `ranking.json` |
 | `PORT` | Porta do servidor Flask (padrão: `8000`) |
 | `QUIZ_ABRIR_NAVEGADOR` | `0` impede a abertura automática do navegador |
@@ -285,6 +270,7 @@ pytest -q
 | `GET` | `/api/perguntas` | Lista perguntas (sem revelar a correta) |
 | `POST` | `/api/perguntas` | Cadastra uma pergunta |
 | `GET` | `/api/desafios` | Lista os desafios do Caça ao Bug (sem a correção) |
+| `GET` | `/api/desafios/{id}` | Consulta um desafio (sem revelar a correção) |
 | `POST` | `/api/desafios` | Cadastra um desafio |
 | `POST` | `/api/desafios/{id}/responder` | Corrige uma resposta do Caça ao Bug |
 | `POST` | `/api/partidas` | Inicia uma partida |
@@ -467,7 +453,7 @@ Ele é gerado em tempo de execução e está no `.gitignore`. O modelo versionad
 ## 🔗 Repositório
 
 ```text
-git@github.com:Juniiiiooor/AplicativoApresentar.git
+git@github.com:Juniiiiooor/Quiz--e--bug.git
 ```
 
 Projeto acadêmico — use à vontade para estudar, adaptar e apresentar. 🎓
