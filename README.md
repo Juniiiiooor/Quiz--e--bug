@@ -233,6 +233,12 @@ Painel do apresentador (abas Partida e Perguntas):
 python desktop/painel.py
 ```
 
+GIF do gatinho em tela cheia (pressione **Esc** para sair):
+
+```powershell
+python anin/gatinho_tela_cheia.py
+```
+
 No Linux, se o Tkinter não estiver instalado: `sudo apt install python3-tk`.
 
 ### 4. Modo arcade (Pygame)
